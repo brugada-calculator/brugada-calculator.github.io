@@ -1,0 +1,116 @@
+/* Reset */
+
+label {
+    margin-bottom: 0;
+}
+
+/* Colors */
+
+.bg-primary {
+    background-color: #333f50 !important;
+}
+
+.bg-secondary {
+    background-color: #8497b0 !important;
+}
+
+.bg-legend {
+    background-color: #dae3f3 !important;
+}
+
+.border-danger {
+    border-color: #dc3545!important;
+}
+
+.border-danger:focus {
+    box-shadow: 0 0 0.2rem 0.2rem #dc3545 !important;
+}
+
+/* Typo */
+
+.primary {
+    color: #333f50 !important;
+}
+
+.secondary {
+    color: #8497b0 !important;
+}
+
+.txt-xs {
+    font-size: 10px;
+}
+
+.txt-s {
+    font-size: 14px;
+}
+
+.txt-m {
+    font-size: 15px;
+}
+
+.txt-l {
+    font-size: 24px;
+}
+
+.txt-xl {
+    font-size: 30px;
+}
+
+.txt-justify {
+    text-align: justify;
+}
+
+/* Layout */
+
+.fill-100 {
+    width: 100%;
+    height: 100%;
+}
+
+.max-w-50 {
+    max-width: 50px;
+}
+
+.max-w-75 {
+    max-width: 75px;
+}
+
+.max-w-100 {
+    max-width: 100px;
+}
+
+.max-w-150 {
+    max-width: 150px;
+}
+
+/* Components */
+
+.count {
+    border-radius: 50%;
+    text-align: center;
+    color: white;
+    width: 30px;
+    height: 30px;
+}
+
+.result {
+    font-size: 18px;
+    color: white;
+}
+
+.input-text {
+    border-radius: 0;
+    border: 1px solid black;
+}
+
+.input-text:focus {
+    border-color: #333f50;
+    box-shadow: 0 0 0.2rem 0.2rem #333f50;
+}
+
+.container {
+    max-width: 750px;
+    line-height: normal;
+    font-family: "Helvetica";
+}
+

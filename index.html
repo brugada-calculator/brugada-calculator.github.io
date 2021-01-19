@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/vendors/bootstrap.min.css">
+    <!-- Our styles -->
+    <link rel="stylesheet" type="text/css" href="assets/styles/main.css?1000001">
+
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Brugada Risk Calculator</title>
+    <meta name="description" content="To quantify ventricular fibrillation risk in Brugada patients with spontaneous type I Brugada pattern"/>
+    <!-- Google Tag Manager -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MY6LTEQEQB"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-MY6LTEQEQB');
+    </script>
+    <!-- End Google Tag Manager -->
+</head>
+
+<body>
+<div id="app" class="container border mt-2">
+    <div class="row justify-content-center pt-2 pb-2 text-light bg-primary">
+        <div class="col-sm-8 text-center">
+            <div class="txt-xl"><strong>BRUGADA RISK CALCULATOR</strong></div>
+            <div class="txt-s">
+                <i>To quantify ventricular fibrillation risk in Brugada patients with spontaneous type I Brugada pattern</i>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col">
+            <form v-on:submit.prevent>
+                <div class="row mb-2">
+                    <div class="col-2 txt-l max-w-75">
+                        <div class="bg-secondary count">1</div>
+                    </div>
+                    <div class="col-4 mr-3 max-w-100">
+                        <div class="row"><label for="ageInput" class="txt-l primary"><strong>AGE</strong></label></div>
+                        <div class="row txt-s"><i>18-50 years-old</i></div>
+                    </div>
+                    <div class="col-5 pl-0">
+                        <div class="row align-items-center">
+                            <div class="col-6 max-w-100">
+                                <input type="number" min="18" max="50" class="form-control input-text" maxlength="2" id="ageInput"
+                                       @change="changeAge" v-model="age" v-bind:class="{ 'border-danger': ageError }">
+                            </div>
+                            <div class="col-6 pl-0 txt-s">years-old</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row align-items-center mb-2">
+                    <div class="col-2 txt-l max-w-75">
+                        <div class="bg-secondary count">2</div>
+                    </div>
+                    <div class="col-4 max-w-100" style="flex: 0 0 14%;">
+                        <div class="row"><label for="ageInput" class="txt-l primary"><strong>ECG</strong></label></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 justify-content-center mb-2">
+                        <div class="row justify-content-center mb-2">
+                            <div class="col-sm-1">
+                                <div class="row justify-content-center">
+                                    <input type="checkbox" name="mutationRadios" id="tt"
+                                           v-model="tt" @change="changeTt">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center mb-2">
+                            <div class="col-7">
+                                <div class="row justify-content-center">
+                                    <img class="fill-100" src="assets/images/tpeak-tend.jpg?1000001" alt="tweak-tend"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2 mb-2 ml-1 mr-1 justify-content-center">
+                            <div class="col-sm-12 txt-m text-center bg-legend pt-1 pb-1">
+                                <label class="form-check-label primary" for="tt"><strong>CORRECTED<br/>TPEAK-TEND ≥100 ms</strong></label>
+                            </div>
+                        </div>
+                        <div class="row ml-1 mr-1">
+                            <div class="col-sm-12 pl-0 pr-0">
+                                <div class="txt-s txt-justify">
+                                    The maximum corrected Tpeak-Tend interval in the precordial leads. The corrected Tpeak–Tend interval is the interval between the peak and the end of the T-wave corrected for the heart rate according to the Bazett formula.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 justify-content-center mb-2">
+                        <div class="row justify-content-center mb-2">
+                            <div class="col-sm-1">
+                                <div class="row justify-content-center">
+                                    <input type="checkbox" name="mutationRadios" id="er"
+                                           v-model="er" @change="changeEr">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center mb-2">
+                            <div class="col-7">
+                                <div class="row justify-content-center">
+                                    <img class="fill-100" src="assets/images/early-repolarization.jpg?1000001" alt="tweak-tend"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2 mb-2 ml-1 mr-1 justify-content-center">
+                            <div class="col-sm-12 txt-m text-center bg-legend pt-1 pb-1">
+                                <label class="form-check-label primary" for="er"><strong>EARLY<br/>REPOLARIZATION</strong></label>
+                            </div>
+                        </div>
+                        <div class="row ml-1 mr-1">
+                            <div class="col-sm-12 pl-0 pr-0">
+                                <div class="txt-s txt-justify">
+                                    A J-point elevation ≥0.1 mV (either a slurring or notching pattern) or a ST-segment elevation >_0.1 mV in ≥2 contiguous leads, among the inferior (II, III, aVF), and/or lateral (V4–V6, I, aVL) leads.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 justify-content-center mb-2">
+                        <div class="row justify-content-center mb-2">
+                            <div class="col-sm-1">
+                                <div class="row justify-content-center">
+                                    <input type="checkbox" name="mutationRadios" id="pt1" @change="changePt1"
+                                           v-model="pt1" v-bind:disabled="!tt">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center mb-2">
+                            <div class="col-7">
+                                <div class="row justify-content-center">
+                                    <img class="fill-100" src="assets/images/peripheral-type-1.jpg?1000001" alt="tweak-tend"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2 mb-2 ml-1 mr-1 justify-content-center">
+                            <div class="col-sm-12 txt-m text-center bg-legend pt-1 pb-1">
+                                <label class="form-check-label primary" for="pt1"><strong>TYPE 1 BRUGADA ECG<br/>IN A PERIPHERAL LEAD</strong></label>
+                            </div>
+                        </div>
+                        <div class="row ml-1 mr-1">
+                            <div class="col-sm-12 pl-0 pr-0">
+                                <div class="txt-s txt-justify">
+                                    A coved-type ST elevation ≥0.1 mV in at least one peripheral lead (I, aVL, II, III, aVF, or aVR).
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-2">
+        <div class="col-12">
+            <div class="row ml-1 mr-1 bg-secondary justify-content-center">
+                <div class="col-10 mt-4 result">
+                    <div class="row justify-content-center"><strong>Risk of ventricular fibrillation / sudden cardiac arrest at 5 years</strong></div>
+                </div>
+            </div>
+            <div class="row ml-1 mr-1 bg-secondary justify-content-center">
+                <div class="col-6 mt-2 mb-4 result">
+                    <div class="row txt-xl justify-content-center"><strong>{{ risk }} %</strong></div>
+                    <div class="row mt-1 justify-content-center">95% CI: {{ ci }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-3">
+        <div class="col-12">
+            <div class="row ml-1 mr-1">
+                <div class="txt-xs txt-justify">
+                    <strong class="primary">Reference</strong><br/>
+                    Delinière A, Baranchuk A, Giai J, Bessiere F, Maucort-Boulch D, Defaye P, Marijon E, Le
+                    Vavasseur O, Dobreanu D, Scridon A, Da Costa A, Delacrétaz E, Kouakam C, Eschalier R,
+                    Extramiana F, Leenhardt A, Burri H, Winum PF, Taieb J, Bouet J, Fauvernier M, Rosianu H,
+                    Carabelli A, Duband B, Chevalier P. Prediction of ventricular arrhythmias in patients with a
+                    spontaneous Brugada type 1 pattern: the key is in the electrocardiogram. Europace
+                    2019;21:1400–9.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-3">
+        <div class="col-9">
+            <img class="fill-100" src="assets/images/logos.jpg?1000001" alt="tweak-tend"/>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-3 mb-3">
+        <div class="col-12 txt-xs text-center">
+            This website is for information and research purposes only.<br/>
+            We assume no responsibility for any medical decisions made with the information provided by this website.
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script src="assets/vendors/vue.min.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+
+        data: {
+            age: undefined,
+            ageError: false,
+            tt: false,
+            ttSelected: false,
+            er: false,
+            pt1: false,
+            risk: "_____",
+            ci: "_____",
+            risks: [
+                {
+                    "age": "18",
+                    "na": "0.27 (0.02-3.74)",
+                    "er": "2.26 (0.1-41.97)",
+                    "tt": "5.16 (2.24-11.67)",
+                    "tt_pt1": "16.79 (4.66-50.71)",
+                    "tt_er": "9.47 (3.82-22.44)",
+                    "tt_er_pt1": "1.79 (0.15-19.7)"
+                },
+                {
+                    "age": "19",
+                    "na": "0.29 (0.02-3.67)",
+                    "er": "2.29 (0.11-37.37)",
+                    "tt": "5.33 (2.39-11.67)",
+                    "tt_pt1": "16.82 (4.92-48.83)",
+                    "tt_er": "9.72 (4.06-22.27)",
+                    "tt_er_pt1": "2.09 (0.19-20.32)"
+                },
+                {
+                    "age": "20",
+                    "na": "0.31 (0.03-3.6)",
+                    "er": "2.32 (0.13-32.98)",
+                    "tt": "5.51 (2.54-11.67)",
+                    "tt_pt1": "16.86 (5.17-47)",
+                    "tt_er": "9.98 (4.31-22.12)",
+                    "tt_er_pt1": "2.44 (0.25-20.91)"
+                },
+                {
+                    "age": "21",
+                    "na": "0.33 (0.03-3.53)",
+                    "er": "2.36 (0.15-28.87)",
+                    "tt": "5.69 (2.71-11.68)",
+                    "tt_pt1": "16.89 (5.44-45.22)",
+                    "tt_er": "10.25 (4.57-21.97)",
+                    "tt_er_pt1": "2.85 (0.33-21.48)"
+                },
+                {
+                    "age": "22",
+                    "na": "0.36 (0.03-3.46)",
+                    "er": "2.39 (0.17-25.05)",
+                    "tt": "5.88 (2.89-11.69)",
+                    "tt_pt1": "16.92 (5.7-43.51)",
+                    "tt_er": "10.52 (4.84-21.83)",
+                    "tt_er_pt1": "3.33 (0.42-22.05)"
+                },
+                {
+                    "age": "23",
+                    "na": "0.38 (0.04-3.39)",
+                    "er": "2.43 (0.19-21.56)",
+                    "tt": "6.07 (3.07-11.7)",
+                    "tt_pt1": "16.95 (5.97-41.86)",
+                    "tt_er": "10.79 (5.13-21.7)",
+                    "tt_er_pt1": "3.88 (0.55-22.61)"
+                },
+                {
+                    "age": "24",
+                    "na": "0.41 (0.05-3.31)",
+                    "er": "2.46 (0.21-18.4)",
+                    "tt": "6.28 (3.27-11.72)",
+                    "tt_pt1": "16.98 (6.24-40.28)",
+                    "tt_er": "11.08 (5.42-21.58)",
+                    "tt_er_pt1": "4.53 (0.71-23.18)"
+                },
+                {
+                    "age": "25",
+                    "na": "0.44 (0.05-3.24)",
+                    "er": "2.5 (0.24-15.58)",
+                    "tt": "6.48 (3.47-11.75)",
+                    "tt_pt1": "17.02 (6.51-38.78)",
+                    "tt_er": "11.37 (5.73-21.48)",
+                    "tt_er_pt1": "5.28 (0.92-23.77)"
+                },
+                {
+                    "age": "26",
+                    "na": "0.47 (0.06-3.16)",
+                    "er": "2.53 (0.27-13.1)",
+                    "tt": "6.7 (3.68-11.78)",
+                    "tt_pt1": "17.05 (6.77-37.37)",
+                    "tt_er": "11.67 (6.05-21.39)",
+                    "tt_er_pt1": "6.14 (1.19-24.39)"
+                },
+                {
+                    "age": "27",
+                    "na": "0.5 (0.07-3.09)",
+                    "er": "2.57 (0.3-10.96)",
+                    "tt": "6.92 (3.9-11.82)",
+                    "tt_pt1": "17.08 (7.04-36.04)",
+                    "tt_er": "11.97 (6.37-21.33)",
+                    "tt_er_pt1": "7.15 (1.53-25.05)"
+                },
+                {
+                    "age": "28",
+                    "na": "0.54 (0.08-3.01)",
+                    "er": "2.61 (0.33-9.15)",
+                    "tt": "7.14 (4.14-11.87)",
+                    "tt_pt1": "17.11 (7.3-34.82)",
+                    "tt_er": "12.28 (6.71-21.28)",
+                    "tt_er_pt1": "8.31 (1.98-25.79)"
+                },
+                {
+                    "age": "29",
+                    "na": "0.58 (0.09-2.94)",
+                    "er": "2.64 (0.36-7.67)",
+                    "tt": "7.38 (4.38-11.94)",
+                    "tt_pt1": "17.15 (7.56-33.69)",
+                    "tt_er": "12.6 (7.06-21.27)",
+                    "tt_er_pt1": "9.66 (2.54-26.62)"
+                },
+                {
+                    "age": "30",
+                    "na": "0.62 (0.1-2.88)",
+                    "er": "2.68 (0.4-6.49)",
+                    "tt": "7.62 (4.63-12.01)",
+                    "tt_pt1": "17.18 (7.8-32.66)",
+                    "tt_er": "12.93 (7.42-21.28)",
+                    "tt_er_pt1": "11.2 (3.27-27.57)"
+                },
+                {
+                    "age": "31",
+                    "na": "0.67 (0.12-2.81)",
+                    "er": "2.72 (0.43-5.62)",
+                    "tt": "7.87 (4.89-12.11)",
+                    "tt_pt1": "17.21 (8.04-31.75)",
+                    "tt_er": "13.27 (7.78-21.32)",
+                    "tt_er_pt1": "12.98 (4.18-28.68)"
+                },
+                {
+                    "age": "32",
+                    "na": "0.71 (0.14-2.76)",
+                    "er": "2.76 (0.47-5.04)",
+                    "tt": "8.13 (5.15-12.22)",
+                    "tt_pt1": "17.24 (8.27-30.95)",
+                    "tt_er": "13.61 (8.15-21.4)",
+                    "tt_er_pt1": "15.01 (5.34-29.98)"
+                },
+                {
+                    "age": "33",
+                    "na": "0.77 (0.16-2.7)",
+                    "er": "2.8 (0.5-4.74)",
+                    "tt": "8.39 (5.43-12.35)",
+                    "tt_pt1": "17.28 (8.48-30.28)",
+                    "tt_er": "13.96 (8.52-21.51)",
+                    "tt_er_pt1": "17.32 (6.78-31.55)"
+                },
+                {
+                    "age": "34",
+                    "na": "0.82 (0.18-2.66)",
+                    "er": "2.84 (0.54-4.71)",
+                    "tt": "8.67 (5.71-12.51)",
+                    "tt_pt1": "17.31 (8.67-29.72)",
+                    "tt_er": "14.32 (8.9-21.68)",
+                    "tt_er_pt1": "19.95 (8.56-33.46)"
+                },
+                {
+                    "age": "35",
+                    "na": "0.88 (0.2-2.63)",
+                    "er": "2.88 (0.57-4.94)",
+                    "tt": "8.95 (5.99-12.7)",
+                    "tt_pt1": "17.34 (8.85-29.3)",
+                    "tt_er": "14.69 (9.27-21.89)",
+                    "tt_er_pt1": "22.93 (10.72-35.79)"
+                },
+                {
+                    "age": "36",
+                    "na": "0.94 (0.23-2.6)",
+                    "er": "2.92 (0.59-5.42)",
+                    "tt": "9.24 (6.28-12.92)",
+                    "tt_pt1": "17.37 (9-29)",
+                    "tt_er": "15.07 (9.64-22.15)",
+                    "tt_er_pt1": "26.26 (13.31-38.67)"
+                },
+                {
+                    "age": "37",
+                    "na": "1.01 (0.26-2.59)",
+                    "er": "2.97 (0.61-6.15)",
+                    "tt": "9.54 (6.57-13.17)",
+                    "tt_pt1": "17.41 (9.12-28.84)",
+                    "tt_er": "15.46 (10.01-22.48)",
+                    "tt_er_pt1": "29.98 (16.32-42.25)"
+                },
+                {
+                    "age": "38",
+                    "na": "1.08 (0.3-2.59)",
+                    "er": "3.01 (0.63-7.12)",
+                    "tt": "9.85 (6.86-13.46)",
+                    "tt_pt1": "17.44 (9.22-28.82)",
+                    "tt_er": "15.85 (10.37-22.88)",
+                    "tt_er_pt1": "34.1 (19.74-46.69)"
+                },
+                {
+                    "age": "39",
+                    "na": "1.16 (0.34-2.61)",
+                    "er": "3.05 (0.64-8.34)",
+                    "tt": "10.17 (7.15-13.8)",
+                    "tt_pt1": "17.47 (9.28-28.94)",
+                    "tt_er": "16.25 (10.71-23.34)",
+                    "tt_er_pt1": "38.61 (23.46-52.15)"
+                },
+                {
+                    "age": "40",
+                    "na": "1.24 (0.38-2.65)",
+                    "er": "3.1 (0.64-9.81)",
+                    "tt": "10.49 (7.43-14.19)",
+                    "tt_pt1": "17.51 (9.31-29.19)",
+                    "tt_er": "16.67 (11.04-23.89)",
+                    "tt_er_pt1": "43.49 (27.32-58.72)"
+                },
+                {
+                    "age": "41",
+                    "na": "1.33 (0.43-2.72)",
+                    "er": "3.14 (0.63-11.51)",
+                    "tt": "10.83 (7.7-14.64)",
+                    "tt_pt1": "17.54 (9.31-29.59)",
+                    "tt_er": "17.09 (11.35-24.53)",
+                    "tt_er_pt1": "48.72 (31.11-66.3)"
+                },
+                {
+                    "age": "42",
+                    "na": "1.42 (0.48-2.8)",
+                    "er": "3.19 (0.61-13.47)",
+                    "tt": "11.18 (7.96-15.15)",
+                    "tt_pt1": "17.57 (9.27-30.13)",
+                    "tt_er": "17.52 (11.63-25.25)",
+                    "tt_er_pt1": "54.22 (34.55-74.5)"
+                },
+                {
+                    "age": "43",
+                    "na": "1.53 (0.53-2.92)",
+                    "er": "3.23 (0.58-15.67)",
+                    "tt": "11.54 (8.2-15.72)",
+                    "tt_pt1": "17.6 (9.18-30.8)",
+                    "tt_er": "17.97 (11.88-26.08)",
+                    "tt_er_pt1": "59.91 (37.43-82.59)"
+                },
+                {
+                    "age": "44",
+                    "na": "1.64 (0.59-3.08)",
+                    "er": "3.28 (0.54-18.12)",
+                    "tt": "11.91 (8.42-16.38)",
+                    "tt_pt1": "17.64 (9.06-31.61)",
+                    "tt_er": "18.42 (12.1-27.01)",
+                    "tt_er_pt1": "65.68 (39.59-89.62)"
+                },
+                {
+                    "age": "45",
+                    "na": "1.75 (0.66-3.27)",
+                    "er": "3.33 (0.49-20.83)",
+                    "tt": "12.29 (8.62-17.11)",
+                    "tt_pt1": "17.67 (8.9-32.56)",
+                    "tt_er": "18.88 (12.28-28.05)",
+                    "tt_er_pt1": "71.38 (40.97-94.81)"
+                },
+                {
+                    "age": "46",
+                    "na": "1.88 (0.73-3.51)",
+                    "er": "3.38 (0.43-23.8)",
+                    "tt": "12.68 (8.79-17.93)",
+                    "tt_pt1": "17.7 (8.69-33.63)",
+                    "tt_er": "19.35 (12.42-29.21)",
+                    "tt_er_pt1": "76.86 (41.64-97.93)"
+                },
+                {
+                    "age": "47",
+                    "na": "2.01 (0.79-3.81)",
+                    "er": "3.42 (0.36-27.02)",
+                    "tt": "13.08 (8.93-18.84)",
+                    "tt_pt1": "17.74 (8.45-34.83)",
+                    "tt_er": "19.83 (12.52-30.48)",
+                    "tt_er_pt1": "81.96 (41.71-99.38)"
+                },
+                {
+                    "age": "48",
+                    "na": "2.15 (0.86-4.17)",
+                    "er": "3.47 (0.29-30.5)",
+                    "tt": "13.5 (9.04-19.85)",
+                    "tt_pt1": "17.77 (8.16-36.13)",
+                    "tt_er": "20.33 (12.57-31.86)",
+                    "tt_er_pt1": "86.51 (41.4-99.87)"
+                },
+                {
+                    "age": "49",
+                    "na": "2.31 (0.93-4.61)",
+                    "er": "3.52 (0.21-34.22)",
+                    "tt": "13.93 (9.11-20.96)",
+                    "tt_pt1": "17.8 (7.84-37.55)",
+                    "tt_er": "20.83 (12.57-33.37)",
+                    "tt_er_pt1": "90.41 (40.87-99.98)"
+                },
+                {
+                    "age": "50",
+                    "na": "2.47 (1-5.14)",
+                    "er": "3.57 (0.13-38.19)",
+                    "tt": "14.37 (9.15-22.16)",
+                    "tt_pt1": "17.84 (7.48-39.07)",
+                    "tt_er": "21.35 (12.53-34.99)",
+                    "tt_er_pt1": "93.56 (40.31-100)"
+                }
+            ]
+        },
+
+        methods: {
+            changeAge() {
+                // check age
+                if(this.age && (this.age < 18 || this.age > 50)) {
+                    this.ageError = true;
+                    this.clear()
+                } else {
+                    this.ageError = false;
+                    this.compute();
+                }
+            },
+
+            changeTt() {
+                if(!this.tt) {
+                    this.pt1 = false;
+                }
+                this.compute();
+            },
+
+            changeEr() {
+                this.compute();
+            },
+
+            changePt1() {
+                this.compute();
+            },
+
+            clear() {
+                this.risk = "_____";
+                this.ci = "_____";
+            },
+
+            compute() {
+                if(!!this.age && !this.ageError) {
+                    const risk = this.risks.find(risk => risk.age === this.age);
+                    let selected = "na";
+                    if(this.tt) {
+                        if(this.er) {
+                            if(this.pt1) {
+                                selected = "tt_er_pt1";
+                            } else {
+                                selected = "tt_er";
+                            }
+                        } else {
+                            if(this.pt1) {
+                                selected = "tt_pt1";
+                            } else {
+                                selected = "tt";
+                            }
+                        }
+                    } else {
+                        if(this.er) {
+                            selected = "er";
+                        }
+                    }
+                    this.risk = risk[selected].split(' ')[0];
+                    this.ci = risk[selected].split(' ')[1].replace('(','').replace(')','');
+                } else {
+                    this.clear();
+                }
+            }
+        }
+    });
+</script>
+</body>
+
+</html>
